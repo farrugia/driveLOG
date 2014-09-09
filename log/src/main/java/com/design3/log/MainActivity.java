@@ -31,7 +31,6 @@ public class MainActivity extends Activity {
 	private String btAddress = null;
 	private BluetoothService btService;
 	private boolean isBound = false;
-	private boolean isConnected = false;
 	
 	public static final int REQUEST_ENABLE_BT = 1;
 	public static final String EXTRA_IS_CONNECTED = "com.design3.log.EXTRA_IS_CONNECTED";
@@ -40,35 +39,31 @@ public class MainActivity extends Activity {
 	@Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        
-        if(savedInstanceState != null) {
-        	isConnected = savedInstanceState.getBoolean(EXTRA_IS_CONNECTED);
-        }
-        
+
 	    setContentView(R.layout.activity_main); 
 	    
 	    Log.d("MAIN_ACTIVITY","MainActivity created...");
 	    
-	    statusText = ((TextView) findViewById(R.id.text_status));	    
+	    statusText = ((TextView) findViewById(R.id.text_status));
 	    statusProgress = (ProgressBar) findViewById(R.id.progress_status);
-	    
-	    /*
-	     * Start or rebind a BluetoothService and bind it to this activity via
-	     * a ServiceConnection object: serviceConnection (implemented at bottom)
-	     */
-		Intent intent = new Intent(this, BluetoothService.class);
-	    bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
 	    
 	    checkBluetooth();
 	    
 		/*
 	     * Check if intent has come from ConnectBluetoothActivity
-	     * If so, access BluetoothService tryConnect() function
+	     * If so, get bluetooth address and store in btAddress
 	     */
 	    if(getIntent().hasExtra(ConnectBluetoothActivity.EXTRA_BT_ADDRESS)) {	    	
 	    	btAddress = getIntent().getExtras().
 	    			getString(ConnectBluetoothActivity.EXTRA_BT_ADDRESS);
 	    	}
+
+        /*
+	     * Start or rebind a BluetoothService and bind it to this activity via
+	     * a ServiceConnection object: serviceConnection (implemented at bottom)
+	     */
+        Intent intent = new Intent(this, BluetoothService.class);
+        bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
     }
 	
 	/* 
@@ -87,7 +82,9 @@ public class MainActivity extends Activity {
 	 * Method to update the MainActivity status bar
 	 */	
 	protected void updateStatus() {
-		if(isConnected) {
+		if(btService.getConnectionStatus()) {
+            if(btAddress == null)
+                btAddress = btService.getBtAddress();
 			btDevice = btAdapter.getRemoteDevice(btAddress);
 			Toast.makeText(MainActivity.this, "Connection successful! Connected to " 
 				+ btDevice.getName() + " at address " + btDevice.getAddress(), 
@@ -105,7 +102,7 @@ public class MainActivity extends Activity {
 	 * Testing function for use with an Arduino board with BT chip
 	 */
 	public void toggleLED(View view) {
-		if(isConnected && isBound) {
+		if(btService.getConnectionStatus() && isBound) {
 			toggleLED = !toggleLED;
 			btService.toggleLED(toggleLED);
 		}
@@ -131,24 +128,22 @@ public class MainActivity extends Activity {
 		startActivity(intent);
 	}
 	
-	@Override
-	protected void onSaveInstanceState(Bundle state) {
-		super.onSaveInstanceState(state);
-		state.putBoolean(EXTRA_IS_CONNECTED, isConnected);
-	}
-	
-
 	/*
 	 * Called when the MainActivity passes out of the foreground
 	 */
 	@Override
-	protected void onPause() {
-		super.onPause();
+	protected void onDestroy() {
+		super.onDestroy();
 		if(isBound) {
 			unbindService(serviceConnection);
 			isBound = false;
 		}			
 	}
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
 	
 	/* 
 	 * Define custom ServiceConnection for handling BluetoothService
@@ -164,8 +159,8 @@ public class MainActivity extends Activity {
 			BTBinder binder = (BTBinder) service;
 			btService = binder.getService();
 			isBound = true;
-			if(btAddress != null && !isConnected) 
-	    		isConnected = btService.tryConnect(btAddress);
+			if(btAddress != null && !btService.getConnectionStatus())
+	    		btService.tryConnect(btAddress);
 			updateStatus();
 			Log.d("MAIN_ACTIVITY", "onServiceConnected started...");
 		}
