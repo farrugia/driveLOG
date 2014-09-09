@@ -1,0 +1,584 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="12.2">
+  <zoom_level>7</zoom_level>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>462</x>
+      <y>112</y>
+      <w>364</w>
+      <h>287</h>
+    </coordinates>
+    <panel_attributes>com.design3.log::MainActivity
+--
+-btDevice: BluetoothDevice
+-btAdapter: BluetoothAdapter
+-toggleLED = false: boolean
+-statusText: TextView
+-statusProgress: ProgressBar
+-btAddress = null: String
+-btService: BluetoothService
+-isBound = false: boolean
+-isConnected = false: boolean
++REQUEST_ENABLE_BT = 1: int
++EXTRA_IS_CONNECTED = "com.design3.log.EXTRA_IS_CONNECTED": String
+-serviceConnection: ServiceConnection
+--
+#onCreate(Bundle savedInstanceState): void
+#onPause(): void
+#checkBluetooth(): void
+#updateStatus(): void
++toggleLED(View view): void
++addCar(View view): void
++viewAbout(View view): void
++viewCars(View view): void
++connectBT(View view): void
+#onSaveInstanceState(Bundle state): void</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>917</x>
+      <y>112</y>
+      <w>350</w>
+      <h>287</h>
+    </coordinates>
+    <panel_attributes>com.design3.log.object::Car
+--
+-carID, odometer, VIN: long
+-fuelCapacity, fuelCurrent, fuelCurrentEconomy, fuelAverageEconomy: double
+-make, model, year: String
+--
++Car(long carID, String make, String model, String year): ctor
++Car(Parcel parcel): ctor
++toString(): String
++getModel(): String
++getMake(): String
++getYear(): String
++getCarID(): long
++setOdometer(long odometer): void
++getOdometer(): long
++setFuelCapacity(double fuelCap): void
++getFuelCapacity(): double
++setFuelCurrent(double fuelCurr): void
++getFuelCurrent(): double
++setFuelAverageEconomy(double fuelAvEc): void
++getFuelAverageEconomy(): double
++setFuelCurrentEconomy(double fuelCurrEc): void
++getFuelCurrentEconomy(): double
++setVIN(long VIN): void
++getVIN(): long
++describeContents(): int
++writeToParcel(Parcel out, int flags): void</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>1358</x>
+      <y>252</y>
+      <w>322</w>
+      <h>147</h>
+    </coordinates>
+    <panel_attributes>com.design3.log.object::Journey
+--
+-startTime, stopTime: Time
+-startOdometer, stopOdometer, carID: long
+-fuelAvgEconomy, fuelTotalUsed: double
+-useType: UseType
+--
++Journey(Time startTime, long startOdometer): ctor
++Journey(Parcel parcel): ctor
+#finishJourney(Time stopTime, long stopOdometer): void
+#setUseType(UseType useType): void
++toString(): String
++describeContents(): int
++writeToParcel(Parcel out, int arg1): void
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>0</x>
+      <y>462</y>
+      <w>385</w>
+      <h>238</h>
+    </coordinates>
+    <panel_attributes>com.design3.log.service::BluetoothService
+--
+-btAdapter: BluetoothAdapter
+-btDevice: BluetoothDevice
+-btSocket: BluetoothSocket
+-istream: InputStream
+-ostream: OutputStream
+-binder = new BTBinder(): IBinder
+-BT_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB"): UUID
++EXTRA_BT_SUCCESS = "com.design3.log.service.EXTRA_BT_SUCCESS": String
++EXTRA_BT_FAILURE = "com.design3.log.service.EXTRA_BT_FAILURE": String
++EXTRA_BT_ADDRESS = "com.design3.log.service.EXTRA_BT_ADDRESS": String
++EXTRA_BT_CONNECTING = "com.design3.log.service.EXTRA_BT_CONNECTING": String
++NOTIFICATION = "com.design3.log.service.NOTIFICATION": String
+--
++onCreate(): void
++onStartCommand(Intent intent, int flags, int startId): int
++onBind(Intent arg0): IBinder
++tryConnect(String address): boolean
++toggleLED(boolean i): void
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>1358</x>
+      <y>462</y>
+      <w>322</w>
+      <h>238</h>
+    </coordinates>
+    <panel_attributes>com.design3.log.sql::CarSQLHelper
+--
++TABLE_CARS = "cars": String
++COLUMN_ID = "_id": String
++COLUMN_MAKE = "make": String
++COLUMN_MODEL = "model": String
++COLUMN_YEAR = "year": String
++COLUMN_ODOMETER = "odometer": String
++COLUMN_VIN = "VIN": String
++COLUMN_FUEL_CAPACITY = "fuelCapacity": String
++COLUMN_FUEL_CURRENT = "fuelCurrent": String
++COLUMN_FUEL_AV_ECO = "fuelAvEco": String
++COLUMN_FUEL_CURR_ECO = "fuelCurrEco": String
+-DATABASE_NAME = "cars.db": String
+-DATABASE_VERSION = 1: int
+-DATABASE_CREATE = "create table " + TABLE_CARS + ...);": String
+--
++CarSQLHelper(Context context): ctor
++onCreate(SQLiteDatabase database): void
++onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion): void</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>462</x>
+      <y>462</y>
+      <w>364</w>
+      <h>238</h>
+    </coordinates>
+    <panel_attributes>com.design3.log::ListCarsActivity
+--
++EXTRA_CAR = "com.design3.log.EXTRA_CAR": String
++EXTRA_CAR_ID = "com.design3.log.EXTRA_CAR_ID": String
+-carsAdapter: CarArrayAdapter
+-carsDB: CarDataSource
+--
+#onCreate(Bundle savedInstanceState): void
+-setupActionBar(): void
++onCreateOptionsMenu(Menu menu): boolean
++onOptionsItemSelected(MenuItem item): boolean
++addCar(View view): void
+#removeCar(final int position): void
+#fillView(): void
+#onListItemClick(ListView l, View v, int position, long id): void
+#onStop(): void
+#onPause(): void
+#onResume(): void
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>910</x>
+      <y>560</y>
+      <w>350</w>
+      <h>140</h>
+    </coordinates>
+    <panel_attributes>com.design3.log.sql::CarDataSource
+--
+-database: SQLiteDatabase
+-dbHelper: CarSQLHelper
+-allColumns = { CarSQLHelper.COLUMN_ID, ... }: String[]
+--
++CarDataSource(Context context): ctor
++open(): void
++close(): void
++createCar(Car car): Car
++deleteCar(Car car): void
++getAllCars(): List&lt;Car&gt;
+-cursorToCar(Cursor cursor): Car
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>0</x>
+      <y>112</y>
+      <w>385</w>
+      <h>133</h>
+    </coordinates>
+    <panel_attributes>com.design3.log::ConnectBluetoothActivity
+--
++EXTRA_BT_ADDRESS = "com.design3.log.EXTRA_BT_ADDRESS": String
+-bta: BluetoothAdapter
+-btAdapter: BTArrayAdapter
+--
+#onCreate(Bundle savedInstanceState): void
+#showBluetoothDevices(): void
+-setupActionBar(): void
++onCreateOptionsMenu(Menu menu): boolean
++onOptionsItemSelected(MenuItem item): boolean
+#onListItemClick(ListView l, View v, int position, long id): void
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>0</x>
+      <y>735</y>
+      <w>385</w>
+      <h>133</h>
+    </coordinates>
+    <panel_attributes>com.design3.log::AddCarActivity
+--
++EXTRA_ADD_CAR_ACTIVITY = "com.design3.log.EXTRA_ADD_CAR_ACTIVITY": String
++EXTRA_MAKE = "com.design3.log.EXTRA_MAKE": String
++EXTRA_MODEL = "com.design3.log.EXTRA_MODEL": String
++EXTRA_YEAR = "com.design3.log.EXTRA_YEAR": String
+--
+#onCreate(Bundle savedInstanceState): void
+-setupActionBar(): void
++onOptionsItemSelected(MenuItem item): boolean
++createCar(View view): void
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>1358</x>
+      <y>105</y>
+      <w>322</w>
+      <h>77</h>
+    </coordinates>
+    <panel_attributes>com.design3.log::ViewCarActivity
+--
+-car: Car
+--
+#onCreate(Bundle savedInstanceState): void
+-setupActionBar(): void
++onCreateOptionsMenu(Menu menu): boolean
++onOptionsItemSelected(MenuItem item): boolean
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>0</x>
+      <y>287</y>
+      <w>385</w>
+      <h>84</h>
+    </coordinates>
+    <panel_attributes>com.design3.log.adapter::BTArrayAdapter
+--
+-context: Context
+-values: ArrayList&lt;BluetoothDevice&gt;
+--
++BTArrayAdapter(Context context, ArrayList&lt;BluetoothDevice&gt; values): ctor
++getView(int position, View convertView, ViewGroup parent): View</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>910</x>
+      <y>462</y>
+      <w>350</w>
+      <h>91</h>
+    </coordinates>
+    <panel_attributes>com.design3.log.adapter::CarArrayAdapter
+--
+-context: Context
+-values: ArrayList&lt;Car&gt;
+--
++CarArrayAdapter(Context context, ArrayList&lt;Car&gt; values): ctor
++getView(int position, View convertView, ViewGroup parent): View
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>462</x>
+      <y>735</y>
+      <w>364</w>
+      <h>133</h>
+    </coordinates>
+    <panel_attributes>com.design3.log::ViewAboutActivity
+--
+  
+--
+#onCreate(Bundle savedInstanceState): void
+-setupActionBar(): void
++onCreateOptionsMenu(Menu menu): boolean
++onOptionsItemSelected(MenuItem item): boolean
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>805</x>
+      <y>581</y>
+      <w>118</w>
+      <h>34</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-
+m1=1
+m2=1</panel_attributes>
+    <additional_attributes>21;21;105;21</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>805</x>
+      <y>469</y>
+      <w>118</w>
+      <h>34</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-
+m1=  1
+m2=1</panel_attributes>
+    <additional_attributes>21;21;105;21</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1239</x>
+      <y>581</y>
+      <w>132</w>
+      <h>34</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-
+m1=1
+m2=1</panel_attributes>
+    <additional_attributes>21;21;119;21</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>154</x>
+      <y>224</y>
+      <w>34</w>
+      <h>76</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-
+m1=   1
+m2=   1</panel_attributes>
+    <additional_attributes>21;21;21;63</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1246</x>
+      <y>266</y>
+      <w>125</w>
+      <h>34</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-
+m1=1
+m2=0..*</panel_attributes>
+    <additional_attributes>21;21;112;21</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1246</x>
+      <y>119</y>
+      <w>125</w>
+      <h>34</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-
+m1=1
+m2=1</panel_attributes>
+    <additional_attributes>112;21;21;21</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1064</x>
+      <y>378</y>
+      <w>34</w>
+      <h>97</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-
+m1=   1
+m2=  0..*</panel_attributes>
+    <additional_attributes>21;84;21;21</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>581</x>
+      <y>7</y>
+      <w>140</w>
+      <h>35</h>
+    </coordinates>
+    <panel_attributes> 
+ android::Activity</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>630</x>
+      <y>21</y>
+      <w>34</w>
+      <h>104</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>21;21;21;91</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>154</x>
+      <y>0</y>
+      <w>440</w>
+      <h>125</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>427;21;21;21;21;112</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>609</x>
+      <y>0</y>
+      <w>279</w>
+      <h>475</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>112;21;266;21;266;441;21;441;21;462</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>700</x>
+      <y>0</y>
+      <w>188</w>
+      <h>825</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>21;21;175;21;175;812;126;812</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>161</x>
+      <y>693</y>
+      <w>727</w>
+      <h>55</h>
+    </coordinates>
+    <panel_attributes>lt=-</panel_attributes>
+    <additional_attributes>21;42;21;21;714;21</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>854</x>
+      <y>0</y>
+      <w>699</w>
+      <h>118</h>
+    </coordinates>
+    <panel_attributes>lt=-</panel_attributes>
+    <additional_attributes>21;21;686;21;686;105</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>994</x>
+      <y>777</y>
+      <w>182</w>
+      <h>42</h>
+    </coordinates>
+    <panel_attributes> 
+java::util::ArrayAdapter</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1155</x>
+      <y>490</y>
+      <w>174</w>
+      <h>321</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>21;308;161;308;161;21;105;21</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>364</x>
+      <y>301</y>
+      <w>720</w>
+      <h>489</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>707;476;707;427;56;427;56;21;21;21</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>91</x>
+      <y>392</y>
+      <w>182</w>
+      <h>42</h>
+    </coordinates>
+    <panel_attributes> 
+ android::Service</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>161</x>
+      <y>413</y>
+      <w>34</w>
+      <h>62</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>21;21;21;49</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>1449</x>
+      <y>777</y>
+      <w>182</w>
+      <h>42</h>
+    </coordinates>
+    <panel_attributes> 
+java::SQLiteOpenHelper</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1505</x>
+      <y>679</y>
+      <w>34</w>
+      <h>111</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>21;21;21;98</additional_attributes>
+  </element>
+</diagram>
