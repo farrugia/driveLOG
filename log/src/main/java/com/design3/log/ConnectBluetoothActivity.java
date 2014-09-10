@@ -63,6 +63,9 @@ public class ConnectBluetoothActivity extends ListActivity {
 		return true;
 	}
 
+    /*
+     *  Ensure that the back button on the top menu goes back to parent activity
+     */
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {

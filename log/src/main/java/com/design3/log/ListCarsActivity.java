@@ -57,7 +57,7 @@ public class ListCarsActivity extends ListActivity {
 				removeCar(position);
 				return true;
 			}
-	    });
+        	    });
 	}
 
 	@Override
@@ -67,6 +67,9 @@ public class ListCarsActivity extends ListActivity {
 		return true;
 	}
 
+    /*
+     *  Ensure that the back button on the top menu goes back to parent activity
+     */
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {

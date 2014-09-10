@@ -3,11 +3,16 @@ package com.design3.log.service;
 import android.app.Service;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
 import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
+import android.widget.TextView;
+
+import com.design3.log.BluetoothWatcher;
+import com.design3.log.R;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -19,6 +24,7 @@ public class BluetoothService extends Service {
     private BluetoothAdapter btAdapter;
     private BluetoothDevice btDevice;
     private BluetoothSocket btSocket;
+    private BluetoothServerSocket btServerSocket;
     private InputStream istream;
     private OutputStream ostream;
     private boolean isConnected;
@@ -73,6 +79,7 @@ public class BluetoothService extends Service {
 
         try {
             btSocket = btDevice.createInsecureRfcommSocketToServiceRecord(BT_UUID);
+            btServerSocket = btAdapter.listenUsingInsecureRfcommWithServiceRecord("BT",BT_UUID);
             btSocket.connect();
 
             isConnected = true;
@@ -99,6 +106,13 @@ public class BluetoothService extends Service {
                 e.printStackTrace();
             }
         }
+    }
+
+    public void watchSerial(TextView textView) {
+
+
+        new BluetoothWatcher(textView, istream);
+
     }
 
     public boolean getConnectionStatus() {

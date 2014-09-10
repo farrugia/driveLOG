@@ -58,7 +58,10 @@ public class ListJourneysActivity extends ListActivity {
  	    }
  	    else setContentView(R.layout.activity_list_journeys); // set view as empty
     }
-	
+
+    /*
+     *  Ensure that the back button on the top menu goes back to parent activity
+     */
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
@@ -68,4 +71,6 @@ public class ListJourneysActivity extends ListActivity {
 		}
 		return super.onOptionsItemSelected(item);
 	}
+
+
 }

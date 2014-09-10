@@ -20,14 +20,13 @@ public class AddCarActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_add_car);
-		// Show the Up button in the action bar.
-		setupActionBar();
-	}
-	private void setupActionBar() {
+		// Show the back button in the action bar
 		getActionBar().setDisplayHomeAsUpEnabled(true);
-
 	}
 
+    /*
+     *  Ensure that the back button on the top menu goes back to parent activity
+     */
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {

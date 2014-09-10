@@ -11,58 +11,45 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.support.v4.app.NavUtils;
 import android.util.Log;
+import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 
 public class AddJourneyActivity extends Activity {
 
 	private Car car;
-    private BluetoothService btService;
-	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
-		// check intent contents
+        setContentView(R.layout.activity_add_journey);
+        // check intent contents
         if(getIntent().hasExtra(Car.EXTRA_CAR)) {
         	car = getIntent().getExtras().getParcelable(Car.EXTRA_CAR);
         	setTitle(car.toString() + ": New Journey");
         }
-        
         getActionBar().setDisplayHomeAsUpEnabled(true);
-
-        /*
-	     * Start or rebind a BluetoothService and bind it to this activity via
-	     * a ServiceConnection object: serviceConnection (implemented at bottom)
-	     */
-        Intent intent = new Intent(this, BluetoothService.class);
-        bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
 	}
 
+    public void beginJourney(View view) {
+        Intent intent = new Intent(this, MonitorJourneyActivity.class);
+        startActivity(intent);
+    }
+
     /*
-	 * Define custom ServiceConnection for handling BluetoothService
-	 */
-    private ServiceConnection serviceConnection = new ServiceConnection() {
-
-        /*
-         * Wait until onServiceConnected() is called before attempting to
-         * access a BluetoothService method and updateStatus()
-         */
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            BluetoothService.BTBinder binder = (BluetoothService.BTBinder) service;
-            btService = binder.getService();
-            isBound = true;
-            if(btAddress != null && !btService.getConnectionStatus())
-                btService.tryConnect(btAddress);
-            updateStatus();
-            Log.d("MAIN_ACTIVITY", "onServiceConnected started...");
+     *  Ensure that the back button on the top menu goes back to parent activity
+     */
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                NavUtils.navigateUpFromSameTask(this);
+                return true;
         }
+        return super.onOptionsItemSelected(item);
+    }
 
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-            isBound = false;
-            Log.d("MAIN_ACTIVITY", "onServiceDisconnected started...");
-        }
-    };
+
 }
