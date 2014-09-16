@@ -3,6 +3,7 @@ package com.design3.log;
 import com.design3.log.model.Car;
 import com.design3.log.model.Journey;
 import com.design3.log.service.BluetoothService;
+import com.design3.log.sql.JourneyDataSource;
 
 import android.app.Activity;
 import android.content.ComponentName;
@@ -17,9 +18,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import java.text.SimpleDateFormat;
+
 public class AddJourneyActivity extends Activity {
 
 	private Car car;
+    private JourneyDataSource journeysDB;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -31,11 +35,23 @@ public class AddJourneyActivity extends Activity {
         	setTitle(car.toString() + ": New Journey");
         }
         getActionBar().setDisplayHomeAsUpEnabled(true);
+
+        journeysDB = new JourneyDataSource(this);
+        journeysDB.open();
 	}
 
     public void beginJourney(View view) {
         Intent intent = new Intent(this, MonitorJourneyActivity.class);
         startActivity(intent);
+    }
+
+    public void addJourney(View view) {
+        SimpleDateFormat start = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+        long id = 0; // temporary id
+        Journey journey = new Journey(id, id, Journey.UseType.PERSONAL, start, 123456);
+        journeysDB.createJourney(journey);
+        journey = new Journey(id, id, Journey.UseType.BUSINESS, start, 123456);
+        journeysDB.createJourney(journey);
     }
 
     /*

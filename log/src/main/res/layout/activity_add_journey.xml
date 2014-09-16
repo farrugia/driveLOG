@@ -2,35 +2,9 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:padding="@dimen/default_margin" >
+    android:padding="@dimen/default_padding" >
 
-    <TextView
-        android:id="@+id/label_year"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:padding="@dimen/label_margin"
-        android:text="@string/label_year" />
-    <TextView
-        android:id="@+id/text_year"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_toRightOf="@id/label_year"
-        android:padding="@dimen/label_margin" />
 
-    <TextView
-        android:id="@+id/label_total_journeys"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/label_year"
-        android:padding="@dimen/label_margin"
-        android:text="@string/label_total_journeys" />
-    <TextView
-        android:id="@+id/text_total_journeys"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_toRightOf="@id/label_total_journeys"
-        android:padding="@dimen/label_margin" />
 
     <Button
         android:id="@+id/button_begin_journey"
@@ -39,6 +13,14 @@
         android:layout_alignParentBottom="true"
         android:onClick="beginJourney"
         android:text="@string/button_add_journey" />
+
+    <Button
+        android:id="@+id/button_add_journey"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/button_begin_journey"
+        android:onClick="addJourney"
+        android:text="Add New Journey" />
 
 
 </RelativeLayout>

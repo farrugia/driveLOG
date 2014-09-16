@@ -10,6 +10,7 @@ public class Car implements Parcelable {
 	private long   carID, odometer, VIN;
 	private double fuelCapacity, fuelCurrent, fuelCurrentEconomy, fuelAverageEconomy;
 	private String make, model, year;
+    private int    personalJourneyCount, businessJourneyCount;
 	
 	// Basic constructor for the Car class
 	public Car(long carID, String make, String model, String year) {
@@ -17,6 +18,8 @@ public class Car implements Parcelable {
 		this.make = make;
 		this.model = model;
 		this.year = year;
+        personalJourneyCount = 0;
+        businessJourneyCount = 0;
 	}
 	
 	/* Constructor which caters for Parcel implementation */
@@ -31,6 +34,8 @@ public class Car implements Parcelable {
 		make = parcel.readString();
 		model = parcel.readString();
 		year = parcel.readString();
+        personalJourneyCount = parcel.readInt();
+        businessJourneyCount = parcel.readInt();
 	}
 	
 	@Override
@@ -54,15 +59,30 @@ public class Car implements Parcelable {
 	public double getFuelCurrent() {return fuelCurrent;}
 	
 	public void setFuelAverageEconomy(double fuelAvEc) 
-		{this.fuelAverageEconomy = fuelAvEc;}
+		{ this.fuelAverageEconomy = fuelAvEc;}
 	public double getFuelAverageEconomy() {return fuelAverageEconomy;}
 	
 	public void setFuelCurrentEconomy(double fuelCurrEc) 
-		{this.fuelCurrentEconomy = fuelCurrEc;}
+		{ this.fuelCurrentEconomy = fuelCurrEc; }
 	public double getFuelCurrentEconomy() {return fuelCurrentEconomy;}
 	
 	public void setVIN(long VIN) {this.VIN = VIN;}
 	public long getVIN() {return VIN;}
+
+    public int getPersonalJourneyCount() { return personalJourneyCount; }
+    public int getBusinessJourneyCount() { return businessJourneyCount; }
+    public int getTotalJourneyCount() { return personalJourneyCount + businessJourneyCount; }
+
+    public void addJourney(char flag) {
+        switch (flag) {
+            case 'p' :
+                personalJourneyCount++;
+                break;
+            case 'b' :
+                businessJourneyCount++;
+                break;
+        }
+    }
 
 	/* Parcelable overridden methods are below */
 	
@@ -83,10 +103,11 @@ public class Car implements Parcelable {
 		out.writeString(make);
 		out.writeString(model);
 		out.writeString(year);
+        out.writeInt(personalJourneyCount);
+        out.writeInt(businessJourneyCount);
 	}
 	
-	public static final Parcelable.Creator<Car> CREATOR 
-							= new Parcelable.Creator<Car>() {
+	public static final Parcelable.Creator<Car> CREATOR = new Parcelable.Creator<Car>() {
 
 		@Override
 		public Car createFromParcel(Parcel source) {

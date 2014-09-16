@@ -55,8 +55,8 @@ public class JourneyDataSource {
 		values.put(JourneySQLHelper.COLUMN_CAR_ID, journey.getCarID());
 		values.put(JourneySQLHelper.COLUMN_USE_TYPE, journey.getUseType());
 		values.put(JourneySQLHelper.COLUMN_START_TIME, journey.getStartTime().toPattern());
-		values.put(JourneySQLHelper.COLUMN_STOP_TIME, journey.getStopTime().toPattern());
 		values.put(JourneySQLHelper.COLUMN_START_ODOMETER, journey.getStartOdometer());
+        values.put(JourneySQLHelper.COLUMN_STOP_TIME, journey.getStopTime().toPattern());
 		values.put(JourneySQLHelper.COLUMN_STOP_ODOMETER, journey.getStopOdometer());
 		values.put(JourneySQLHelper.COLUMN_FUEL_AV_ECO, journey.getFuelAvgEconomy());
 		values.put(JourneySQLHelper.COLUMN_FUEL_TOTAL_USED, journey.getFuelTotalUsed());
@@ -78,9 +78,8 @@ public class JourneyDataSource {
 				JourneySQLHelper.COLUMN_ID + " = " + id, null);
 	}
 	
-	public List<Journey> getJourneys(long carID) {
-		List<Journey> journeys = new ArrayList<Journey>();	
-		String selection = JourneySQLHelper.COLUMN_CAR_ID + " = " + carID;
+	public List<Journey> getJourneys(String selection) {
+		List<Journey> journeys = new ArrayList<Journey>();
 		
 		Cursor cursor = database.query(JourneySQLHelper.TABLE_JOURNEYS, allColumns,
 				selection, null, null, null, null);

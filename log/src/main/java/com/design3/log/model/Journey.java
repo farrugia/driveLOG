@@ -24,6 +24,10 @@ public class Journey implements Parcelable {
 		this.useType = useType;
 		this.startTime = startTime;
 		this.startOdometer = startOdometer;
+        this.stopOdometer = startOdometer;
+        this.stopTime = startTime;
+        this.fuelAvgEconomy = 0;
+        this.fuelTotalUsed = 0;
 	}
 	
 	/* Parcel Constructor */

@@ -1,76 +1,87 @@
 package com.design3.log;
 
-import java.util.ArrayList;
+import java.util.Locale;
 
-import com.design3.log.adapter.JourneyArrayAdapter;
+import android.app.Activity;
+import android.app.Fragment;
+import android.app.FragmentManager;
+import android.support.v13.app.FragmentPagerAdapter;
+import android.os.Bundle;
+import android.support.v4.view.ViewPager;
+import android.view.Menu;
+import android.view.MenuItem;
+
 import com.design3.log.model.Car;
-import com.design3.log.model.Journey;
 import com.design3.log.sql.JourneyDataSource;
 
-import android.app.ListActivity;
-import android.os.Bundle;
-import android.support.v4.app.NavUtils;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ListView;
 
-public class ListJourneysActivity extends ListActivity {
-	
-	private JourneyArrayAdapter journeysAdapter; // dynamic array for journeys
-	private JourneyDataSource journeysDB;
-	private Car car;
-	
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		getActionBar().setDisplayHomeAsUpEnabled(true);
-		
-		journeysDB = new JourneyDataSource(this);
-		journeysDB.open();
-        
-		car = (Car) getIntent().getParcelableExtra(Car.EXTRA_CAR);
-        fillView(car.getCarID());
-        
-	    ListView view = getListView();
-	    view.setVerticalScrollBarEnabled(true);
-	    
-	    // When an item is long pressed a delete dialog props up
-	    view.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+public class ListJourneysActivity extends Activity {
 
-			@Override
-			public boolean onItemLongClick(AdapterView<?> parent, View view,
-					int position, long id) {				
-//				removeJourney(position); TODO
-				return true;
-			}
-	    });
-	}
-	
-	// method to fill list view with journeys
-    protected void fillView(long carID) {    	
-    	ArrayList<Journey> journeysArray = 
-    			(ArrayList<Journey>) journeysDB.getJourneys(carID); 
- 	    
- 		if(!journeysArray.isEmpty()) {
- 	        journeysAdapter = new JourneyArrayAdapter(this, journeysArray);
- 	        setListAdapter(journeysAdapter); // set view as list of cars
- 	    }
- 	    else setContentView(R.layout.activity_list_journeys); // set view as empty
+    private JourneysPagerAdapter mJourneysPagerAdapter;
+    private ViewPager mViewPager;
+    private Car car;
+    private JourneyDataSource journeysDB;
+
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_list_journeys);
+
+        journeysDB = new JourneyDataSource(this);
+        journeysDB.open();
+
+        car = getIntent().getParcelableExtra(Car.EXTRA_CAR);
+
+        // Create the adapter that will return a fragment for each of the three
+        // primary sections of the activity.
+        mJourneysPagerAdapter = new JourneysPagerAdapter(getFragmentManager());
+
+        // Set up the ViewPager with the sections adapter.
+        mViewPager = (ViewPager) findViewById(R.id.pager);
+        mViewPager.setAdapter(mJourneysPagerAdapter);
     }
 
-    /*
-     *  Ensure that the back button on the top menu goes back to parent activity
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.list_journeys, menu);
+        return true;
+    }
+
+    /**
+     * returns a fragment corresponding to one of the sections/tabs/pages.
      */
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-		case android.R.id.home:
-			NavUtils.navigateUpFromSameTask(this);
-			return true;
-		}
-		return super.onOptionsItemSelected(item);
-	}
+    public class JourneysPagerAdapter extends FragmentPagerAdapter {
 
+        public JourneysPagerAdapter(FragmentManager fm) {
+            super(fm);
+        }
 
+        @Override
+        public Fragment getItem(int position) {
+            // getItem is called to instantiate the fragment for the given page.
+            // Return a PlaceholderFragment (defined as a static inner class below).
+            return ListJourneysFragment.newInstance(position + 1, car, journeysDB);
+        }
+
+        @Override
+        public int getCount() {
+            return 3;
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            Locale l = Locale.getDefault();
+            switch (position) {
+                case 0:
+                    return getString(R.string.title_section_personal).toUpperCase(l);
+                case 1:
+                    return getString(R.string.title_section_business).toUpperCase(l);
+                case 2:
+                    return getString(R.string.title_section_all).toUpperCase(l);
+            }
+            return null;
+        }
+    }
 }
