@@ -1,24 +1,40 @@
 package com.design3.log;
 
-import java.util.Locale;
-
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
-import android.support.v13.app.FragmentPagerAdapter;
+import android.app.FragmentTransaction;
+import android.app.ListFragment;
 import android.os.Bundle;
+import android.support.v13.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
 
+import com.design3.log.adapter.JourneyArrayAdapter;
+import com.design3.log.adapter.JourneysPagerAdapter;
 import com.design3.log.model.Car;
+import com.design3.log.model.Journey;
 import com.design3.log.sql.JourneyDataSource;
+import com.design3.log.sql.JourneySQLHelper;
+
+import java.util.ArrayList;
 
 
-public class ListJourneysActivity extends Activity {
+public class ListJourneysActivity extends FragmentActivity {
 
-    private JourneysPagerAdapter mJourneysPagerAdapter;
-    private ViewPager mViewPager;
+    public static final CharSequence TAB_PERSONAL = "PERSONAL";
+    public static final CharSequence TAB_BUSINESS = "BUSINESS";
+    public static final CharSequence TAB_ALL      = "ALL";
+    public static final String EXTRA_SECTION_NUMBER = "section_number";
+
+    private JourneysPagerAdapter journeysPagerAdapter;
+    private ViewPager viewPager;
     private Car car;
     private JourneyDataSource journeysDB;
 
@@ -27,19 +43,52 @@ public class ListJourneysActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_journeys);
+        getActionBar().setDisplayHomeAsUpEnabled(true);
 
+        car = getIntent().getParcelableExtra(Car.EXTRA_CAR);
         journeysDB = new JourneyDataSource(this);
         journeysDB.open();
 
-        car = getIntent().getParcelableExtra(Car.EXTRA_CAR);
-
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
-        mJourneysPagerAdapter = new JourneysPagerAdapter(getFragmentManager());
+        journeysPagerAdapter = new JourneysPagerAdapter(getFragmentManager());
 
         // Set up the ViewPager with the sections adapter.
-        mViewPager = (ViewPager) findViewById(R.id.pager);
-        mViewPager.setAdapter(mJourneysPagerAdapter);
+        viewPager = (ViewPager) findViewById(R.id.pager);
+        viewPager.setAdapter(journeysPagerAdapter);
+
+        /*
+        Ensure that the tabs change foreground when selecting them
+         */
+        viewPager.setOnPageChangeListener(
+                new ViewPager.SimpleOnPageChangeListener() {
+                    @Override
+                    public void onPageSelected(int position) {
+                        getActionBar().setSelectedNavigationItem(position);
+                    }
+                });
+
+        /*
+        Get actionbar, set up as tabbed, and implement a tablistener
+         */
+        final ActionBar actionBar = getActionBar();
+        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+
+        ActionBar.TabListener tabListener = new ActionBar.TabListener() {
+            public void onTabSelected(ActionBar.Tab tab, FragmentTransaction ft) {
+                viewPager.setCurrentItem(tab.getPosition());
+            }
+            public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction ft) {
+
+            }
+            public void onTabReselected(ActionBar.Tab tab, FragmentTransaction ft) {
+
+            }
+        };
+
+        actionBar.addTab(actionBar.newTab().setText(TAB_PERSONAL).setTabListener(tabListener));
+        actionBar.addTab(actionBar.newTab().setText(TAB_BUSINESS).setTabListener(tabListener));
+        actionBar.addTab(actionBar.newTab().setText(TAB_ALL).setTabListener(tabListener));
     }
 
     @Override
@@ -49,39 +98,28 @@ public class ListJourneysActivity extends Activity {
         return true;
     }
 
-    /**
-     * returns a fragment corresponding to one of the sections/tabs/pages.
-     */
-    public class JourneysPagerAdapter extends FragmentPagerAdapter {
-
-        public JourneysPagerAdapter(FragmentManager fm) {
-            super(fm);
+    /*
+    *  Ensure that the back button on the top menu goes back to parent activity
+    */
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
         }
-
-        @Override
-        public Fragment getItem(int position) {
-            // getItem is called to instantiate the fragment for the given page.
-            // Return a PlaceholderFragment (defined as a static inner class below).
-            return ListJourneysFragment.newInstance(position + 1, car, journeysDB);
-        }
-
-        @Override
-        public int getCount() {
-            return 3;
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            Locale l = Locale.getDefault();
-            switch (position) {
-                case 0:
-                    return getString(R.string.title_section_personal).toUpperCase(l);
-                case 1:
-                    return getString(R.string.title_section_business).toUpperCase(l);
-                case 2:
-                    return getString(R.string.title_section_all).toUpperCase(l);
-            }
-            return null;
-        }
+        return super.onOptionsItemSelected(item);
     }
+
+    protected JourneyDataSource getJourneysDB() {
+        return journeysDB;
+    }
+
+    protected Car getCar() {
+        return car;
+    }
+
+
+
+
 }

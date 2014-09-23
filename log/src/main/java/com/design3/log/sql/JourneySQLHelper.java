@@ -36,7 +36,7 @@ public class JourneySQLHelper extends SQLiteOpenHelper {
 	/* 8 */ + COLUMN_FUEL_TOTAL_USED	+ " integer);";
 	
 	public JourneySQLHelper(Context context) {
-		super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        super(context, DATABASE_NAME, null, DATABASE_VERSION);
 	}
 
 	@Override

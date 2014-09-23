@@ -18,11 +18,9 @@ public class ViewCarActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
         if(savedInstanceState != null) {
             car = savedInstanceState.getParcelable(Car.EXTRA_CAR);
         }
-
         setContentView(R.layout.activity_view_car);
 		// Check intent contents
         if(getIntent().hasExtra(Car.EXTRA_CAR)) {
@@ -43,7 +41,7 @@ public class ViewCarActivity extends Activity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case android.R.id.home:
-			NavUtils.navigateUpFromSameTask(this);
+			onBackPressed();
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
@@ -85,8 +83,7 @@ public class ViewCarActivity extends Activity {
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
-        super.onSaveInstanceState(savedInstanceState);
         savedInstanceState.putParcelable(Car.EXTRA_CAR, car);
-
+        super.onSaveInstanceState(savedInstanceState);
     }
 }
