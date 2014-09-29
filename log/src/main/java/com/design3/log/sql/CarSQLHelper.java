@@ -17,7 +17,8 @@ public class CarSQLHelper extends SQLiteOpenHelper {
 	public static final String COLUMN_FUEL_CAPACITY = "fuelCapacity";
 	public static final String COLUMN_FUEL_CURRENT	= "fuelCurrent";
 	public static final String COLUMN_FUEL_AV_ECO 	= "fuelAvEco";
-	public static final String COLUMN_FUEL_CURR_ECO = "fuelCurrEco";
+    public static final String COLUMN_PERSONAL_JOURNEYS = "personalJourneys";
+    public static final String COLUMN_BUSINESS_JOURNEYS = "businessJourneys";
 	
 	private static final String DATABASE_NAME = "cars.db";
 	private static final int 	DATABASE_VERSION = 1;
@@ -32,10 +33,11 @@ public class CarSQLHelper extends SQLiteOpenHelper {
 	/* 3 */	+ COLUMN_YEAR  			+ "	text not null, "
 	/* 4 */ + COLUMN_VIN   			+ " integer, "
 	/* 5 */ + COLUMN_ODOMETER		+ " integer, "
-	/* 6 */ + COLUMN_FUEL_CAPACITY 	+ " integer, "
-	/* 7 */ + COLUMN_FUEL_CURRENT	+ " integer, "
-	/* 8 */ + COLUMN_FUEL_AV_ECO	+ " integer, "
-	/* 9 */ + COLUMN_FUEL_CURR_ECO	+ " integer);";
+	/* 6 */ + COLUMN_FUEL_CAPACITY 	+ " real, "
+	/* 7 */ + COLUMN_FUEL_CURRENT	+ " real, "
+	/* 8 */ + COLUMN_FUEL_AV_ECO	+ " real, "
+    /* 9 */ + COLUMN_PERSONAL_JOURNEYS + " integer, "
+    /* 10 */+ COLUMN_BUSINESS_JOURNEYS + " integer);";
 	
 	public CarSQLHelper(Context context) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);

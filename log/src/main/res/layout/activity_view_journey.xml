@@ -1,0 +1,184 @@
+<RelativeLayout 
+     xmlns:android="http://schemas.android.com/apk/res/android"
+     android:layout_width="wrap_content"
+     android:layout_height="wrap_content" 
+     android:padding="@dimen/default_padding" >
+
+    <TextView
+        android:id="@+id/label_journeyid"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:padding="@dimen/label_padding"
+        android:textSize="@dimen/text_subheader2"
+        android:text="@string/label_journeyid"
+        android:textStyle="bold"/>
+    <TextView
+        android:id="@+id/text_journeyid"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/label_journeyid"
+        android:layout_toEndOf="@id/label_journeyid"
+        android:textSize="@dimen/text_subheader2"
+        android:padding="@dimen/label_padding"
+        android:textStyle="bold"/>
+    <TextView
+        android:id="@+id/label_use_type"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/label_padding"
+        android:textSize="@dimen/text_subheader2"
+        android:layout_below="@id/label_journeyid"
+        android:text="@string/label_use_type"
+        android:textStyle="bold"/>
+    <TextView
+        android:id="@+id/text_use_type"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/label_use_type"
+        android:layout_toEndOf="@id/label_use_type"
+        android:layout_below="@id/label_journeyid"
+        android:textSize="@dimen/text_subheader2"
+        android:padding="@dimen/label_padding"
+        android:textStyle="bold"/>
+     <TextView
+         android:id="@+id/label_start"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:padding="@dimen/label_padding"
+         android:layout_marginTop="@dimen/divider_regular"
+         android:text="@string/label_start"
+         android:layout_below="@id/label_use_type"
+         android:textSize="@dimen/text_regular"
+         android:textStyle="bold"/>
+     <TextView
+         android:id="@+id/text_start"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_toRightOf="@id/label_start"
+         android:layout_toEndOf="@id/label_start"
+         android:layout_below="@id/label_use_type"
+         android:layout_marginTop="@dimen/divider_regular"
+         android:padding="@dimen/label_padding"
+         android:textSize="@dimen/text_regular"
+         android:textStyle="bold"/>
+
+    <TextView
+        android:id="@+id/label_stop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/label_padding"
+        android:text="@string/label_stop"
+        android:layout_below="@+id/label_start"
+        android:textSize="@dimen/text_regular"
+        android:textStyle="bold"/>
+    <TextView
+        android:id="@+id/text_stop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/label_stop"
+        android:layout_toEndOf="@id/label_stop"
+        android:layout_below="@id/label_start"
+        android:padding="@dimen/label_padding"
+        android:textSize="@dimen/text_regular"
+        android:textStyle="bold"/>
+
+    <TextView
+        android:id="@+id/label_total_run_minutes"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/label_padding"
+        android:text="@string/label_total_run_minutes"
+        android:layout_below="@+id/label_stop"
+        android:textSize="@dimen/text_regular"
+        android:textStyle="bold"/>
+    <TextView
+        android:id="@+id/text_total_run_minutes"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/label_total_run_minutes"
+        android:layout_toEndOf="@id/label_total_run_minutes"
+        android:layout_below="@id/label_stop"
+        android:padding="@dimen/label_padding"
+        android:textSize="@dimen/text_regular"
+        android:textStyle="bold"/>
+
+    <TextView
+        android:id="@+id/label_avg_economy"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/label_padding"
+        android:layout_marginTop="@dimen/divider_regular"
+        android:text="@string/label_avg_economy"
+        android:layout_below="@+id/label_total_run_minutes"
+        android:textSize="@dimen/text_subheader2"
+        android:textStyle="bold" />
+    <TextView
+        android:id="@+id/text_avg_economy"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/label_avg_economy"
+        android:padding="@dimen/label_padding"
+        android:textSize="@dimen/text_subheader2"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/label_avg_speed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/label_padding"
+        android:layout_marginTop="@dimen/divider_regular"
+        android:text="@string/label_avg_speed"
+        android:layout_below="@+id/text_avg_economy"
+        android:textSize="@dimen/text_subheader2"
+        android:textStyle="bold" />
+    <TextView
+        android:id="@+id/text_avg_speed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/label_avg_speed"
+        android:padding="@dimen/label_padding"
+        android:textSize="@dimen/text_subheader2"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/label_total_km"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/label_padding"
+        android:layout_marginTop="@dimen/divider_regular"
+        android:text="@string/label_total_km"
+        android:layout_below="@id/text_avg_speed"
+        android:textSize="@dimen/text_regular"
+        android:textStyle="bold" />
+    <TextView
+        android:id="@+id/text_total_km"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/divider_regular"
+        android:layout_toRightOf="@id/label_total_km"
+        android:layout_toEndOf="@id/label_total_km"
+        android:layout_below="@id/text_avg_speed"
+        android:padding="@dimen/label_padding"
+        android:textSize="@dimen/text_regular"
+        android:textStyle="bold" />
+
+    <Button
+        android:id="@+id/button_graph_journey"
+        android:drawableLeft="@drawable/image_graph_white"
+        android:text="@string/button_graph_journey"
+        android:textColor="#FFFFFF"
+        android:textSize="@dimen/text_regular_plus"
+        android:onClick="graphJourney"
+        android:layout_width="fill_parent"
+        android:layout_height="50dp"
+        android:background="@drawable/buttonshape"
+        android:drawablePadding="15dp"
+        android:gravity="left|center_vertical"
+        android:shadowColor="#A8A8A8"
+        android:shadowDx="0"
+        android:shadowDy="0"
+        android:shadowRadius="5"
+        android:layout_alignParentBottom="true" />
+ 
+ </RelativeLayout>

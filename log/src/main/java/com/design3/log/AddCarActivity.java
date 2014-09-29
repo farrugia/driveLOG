@@ -7,6 +7,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.support.v4.app.NavUtils;
+import android.widget.Toast;
 
 public class AddCarActivity extends Activity {
 
@@ -38,16 +39,28 @@ public class AddCarActivity extends Activity {
 	}
 	
 	public void createCar(View view) {
+
+        boolean emptyField = false;
 		Intent intent = new Intent(this, ListCarsActivity.class);
 		EditText make  = (EditText) findViewById(R.id.edit_make);
 		EditText model = (EditText) findViewById(R.id.edit_model);
 		EditText year  = (EditText) findViewById(R.id.edit_year);
-		intent.putExtra(EXTRA_MAKE,  make.getText().toString());
-		intent.putExtra(EXTRA_MODEL, model.getText().toString());
-		intent.putExtra(EXTRA_YEAR,  year.getText().toString());
-		// The following is an extra which determines that this intent is
-		// sourced from this activity, AddCarActivity
-		intent.putExtra(EXTRA_ADD_CAR_ACTIVITY, "Add Car Activity");
-		startActivity(intent);
+
+        if(make == null || model == null || year == null) emptyField = true;
+
+        if(emptyField == true) {
+            Toast.makeText(AddCarActivity.this, "Please make sure there are no empty fields !",
+                    Toast.LENGTH_LONG).show();
+        }
+
+        else {
+            intent.putExtra(EXTRA_MAKE, make.getText().toString());
+            intent.putExtra(EXTRA_MODEL, model.getText().toString());
+            intent.putExtra(EXTRA_YEAR, year.getText().toString());
+            // The following is an extra which determines that this intent is
+            // sourced from this activity, AddCarActivity
+            intent.putExtra(EXTRA_ADD_CAR_ACTIVITY, "Add Car Activity");
+            startActivity(intent);
+        }
 	}
 }

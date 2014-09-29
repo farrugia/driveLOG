@@ -1,30 +1,19 @@
 package com.design3.log;
 
 import android.app.ActionBar;
-import android.app.Activity;
-import android.app.Fragment;
-import android.app.FragmentManager;
 import android.app.FragmentTransaction;
-import android.app.ListFragment;
+import android.content.Intent;
 import android.os.Bundle;
-import android.support.v13.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 
-import com.design3.log.adapter.JourneyArrayAdapter;
 import com.design3.log.adapter.JourneysPagerAdapter;
 import com.design3.log.model.Car;
-import com.design3.log.model.Journey;
+import com.design3.log.sql.CarDataSource;
 import com.design3.log.sql.JourneyDataSource;
-import com.design3.log.sql.JourneySQLHelper;
-
-import java.util.ArrayList;
-
 
 public class ListJourneysActivity extends FragmentActivity {
 
@@ -37,6 +26,8 @@ public class ListJourneysActivity extends FragmentActivity {
     private ViewPager viewPager;
     private Car car;
     private JourneyDataSource journeysDB;
+    private CarDataSource carsDB;
+    private long carID;
 
 
     @Override
@@ -46,8 +37,13 @@ public class ListJourneysActivity extends FragmentActivity {
         getActionBar().setDisplayHomeAsUpEnabled(true);
 
         car = getIntent().getParcelableExtra(Car.EXTRA_CAR);
+        carID = car.getCarID();
         journeysDB = new JourneyDataSource(this);
         journeysDB.open();
+        carsDB = new CarDataSource(this);
+        carsDB.open();
+
+        setTitle(car.toString());
 
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
@@ -111,15 +107,35 @@ public class ListJourneysActivity extends FragmentActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    public void addJourney(View view) {
+        Intent intent = new Intent(this, AddJourneyActivity.class);
+        intent.putExtra(Car.EXTRA_CAR, car);
+        startActivity(intent);
+    }
+
     protected JourneyDataSource getJourneysDB() {
         return journeysDB;
     }
-
+    protected CarDataSource getCarsDB() { return carsDB; }
     protected Car getCar() {
         return car;
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        savedInstanceState.putLong(Car.EXTRA_CAR_ID, carID);
+        super.onSaveInstanceState(savedInstanceState);
+    }
 
+    @Override
+    protected void onStop() {
+        carsDB.close();
+        super.onStop();
+    }
 
-
+    @Override
+    protected void onRestart() {
+        carsDB.open();
+        super.onRestart();
+    }
 }

@@ -1,6 +1,7 @@
 package com.design3.log;
 
 import com.design3.log.model.Car;
+import com.design3.log.sql.CarDataSource;
 
 import android.os.Bundle;
 import android.app.Activity;
@@ -13,19 +14,30 @@ import android.support.v4.app.NavUtils;
 
 public class ViewCarActivity extends Activity {
 	
-	private Car car;
+	private long carID;
+    private Car car;
+    private CarDataSource carsDB;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-        if(savedInstanceState != null) {
-            car = savedInstanceState.getParcelable(Car.EXTRA_CAR);
-        }
+
+        carsDB = new CarDataSource(this);
+        carsDB.open();
+
         setContentView(R.layout.activity_view_car);
-		// Check intent contents
+
+        // Check intent contents
         if(getIntent().hasExtra(Car.EXTRA_CAR)) {
         	car = getIntent().getExtras().getParcelable(Car.EXTRA_CAR);
         	setTitle(car.toString());
+            carID = car.getCarID();
+            fillView();
+        }
+
+        else if(savedInstanceState != null) {
+            carID = savedInstanceState.getLong(Car.EXTRA_CAR_ID);
+            car = carsDB.getCar(carID);
             fillView();
         }
 
@@ -73,7 +85,7 @@ public class ViewCarActivity extends Activity {
         odometerText = (TextView)findViewById(R.id.text_odometer);
 
         yearText.setText(car.getYear());
-        carIdText.setText(String.format("# %06d",(int)car.getCarID()));
+        carIdText.setText(String.format("# %03d",(int)car.getCarID()));
         personalJourneyText.setText(String.valueOf(car.getPersonalJourneyCount()));
         businessJourneyText.setText(String.valueOf(car.getBusinessJourneyCount()));
         totalJourneyText.setText(String.valueOf(car.getTotalJourneyCount()));
@@ -83,7 +95,21 @@ public class ViewCarActivity extends Activity {
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
-        savedInstanceState.putParcelable(Car.EXTRA_CAR, car);
+        savedInstanceState.putLong(Car.EXTRA_CAR_ID, carID);
         super.onSaveInstanceState(savedInstanceState);
+    }
+
+    @Override
+    protected void onStop() {
+        carsDB.close();
+        super.onStop();
+    }
+
+    @Override
+    protected void onRestart() {
+        carsDB.open();
+        car = carsDB.getCar(carID);
+        fillView();
+        super.onRestart();
     }
 }

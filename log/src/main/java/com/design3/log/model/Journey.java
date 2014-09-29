@@ -1,5 +1,6 @@
 package com.design3.log.model;
 
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import android.annotation.SuppressLint;
 import android.os.Parcel;
@@ -7,18 +8,19 @@ import android.os.Parcelable;
 
 public class Journey implements Parcelable {
 
-	public static final String EXTRA_JOURNEY    = "com.design3.log.model.EXTRA_JOURNEY";
+	public static final String EXTRA_JOURNEY       = "com.design3.log.model.EXTRA_JOURNEY";
+    public static final String EXTRA_JOURNEY_ID    = "com.design3.log.model.EXTRA_JOURNEY_ID";
 	
 	public enum UseType {BUSINESS, PERSONAL};
 	
-	private SimpleDateFormat startTime, stopTime;
+	private String startTime, stopTime;
 	private long startOdometer, stopOdometer, carID, journeyID;
-	private double fuelAvgEconomy, fuelTotalUsed;
+	private double fuelAvgEconomy, fuelTotalUsed, totalDistance, avgSpeed;
 	private UseType useType;
 	
 	/* Primary Constructor */
 	public Journey(long journeyID, long carID, UseType useType, 
-			SimpleDateFormat startTime, long startOdometer) {
+			String startTime, long startOdometer) {
 		this.journeyID = journeyID;
 		this.carID = carID;
 		this.useType = useType;
@@ -28,6 +30,8 @@ public class Journey implements Parcelable {
         this.stopTime = startTime;
         this.fuelAvgEconomy = 0;
         this.fuelTotalUsed = 0;
+        this.totalDistance = 0;
+        this.avgSpeed = 0;
 	}
 	
 	/* Parcel Constructor */
@@ -37,14 +41,16 @@ public class Journey implements Parcelable {
 		carID		  = parcel.readLong();
 		startOdometer = parcel.readLong();
 		stopOdometer  = parcel.readLong();
-		startTime     = new SimpleDateFormat(parcel.readString());
-		stopTime	  = new SimpleDateFormat(parcel.readString());
+		startTime     = parcel.readString();
+		stopTime	  = parcel.readString();
 		useType 	  = UseType.valueOf(parcel.readString());
 		fuelAvgEconomy= parcel.readDouble();
 		fuelTotalUsed = parcel.readDouble();
+        totalDistance = parcel.readDouble();
+        avgSpeed      = parcel.readDouble();
 	}
 	
-	protected void finishJourney(SimpleDateFormat stopTime, long stopOdometer) {
+	protected void finishJourney(String stopTime, long stopOdometer) {
 		this.stopTime = stopTime;
 		this.stopOdometer = stopOdometer;
 	}
@@ -53,11 +59,11 @@ public class Journey implements Parcelable {
 	
 	public long getJourneyID() { return journeyID; }
 	public long getCarID() { return carID; }
-	public SimpleDateFormat getStartTime() { return startTime; }
+	public String getStartTime() { return startTime; }
 	public long getStartOdometer() { return startOdometer; }
 	
-	public SimpleDateFormat getStopTime()  { return stopTime;  }
-	public void setStopTime(SimpleDateFormat stopTime) { this.stopTime = stopTime; }
+	public String getStopTime()  { return stopTime;  }
+	public void setStopTime(String stopTime) { this.stopTime = stopTime; }
 	
 	public long getStopOdometer()  { return stopOdometer;  }
 	public void setStopOdometer(long stopOdometer) 
@@ -70,14 +76,41 @@ public class Journey implements Parcelable {
 	public double getFuelTotalUsed()  { return fuelTotalUsed;  }
 	public void setFuelTotalUsed(double fuelTotalUsed) 
 		{ this.fuelTotalUsed = fuelTotalUsed; }
+
+    public double getTotalDistance() { return totalDistance; }
+    public void setTotalDistance(double totalDistance) { this.totalDistance = totalDistance; }
+
+    public double getAvgSpeed() { return avgSpeed; }
+    public void setAvgSpeed(double avgSpeed) { this.avgSpeed = avgSpeed; }
 	
-	public String getUseType() { return useType.toString(); }
-	protected void setUseType(UseType useType) { this.useType = useType; }
-	
+	public UseType getUseType() { return useType; }
+
+    public int getRunTimeMinutes() {
+        String parts[] = startTime.split(" ")[1].split(":");
+        int starthour = Integer.parseInt(parts[0]);
+        int startminute = Integer.parseInt(parts[1]);
+
+        parts = stopTime.split(" ")[1].split(":");
+        int stophour = Integer.parseInt(parts[0]);
+        int stopminute = Integer.parseInt(parts[1]);
+
+        int hour, minute;
+
+        if(stophour < starthour)
+            hour = 12 - (starthour - stophour);
+        else hour = stophour - starthour;
+        if(stopminute < startminute)
+            minute = 60 - (startminute - stopminute);
+        else minute = stopminute - startminute;
+        if(stophour < starthour && stopminute < startminute)
+            hour--;
+
+        return (hour*60)+minute;
+    }
+
 	@Override
 	public String toString() {
-		return carID + ": Journey : " + useType.toString() + " : "
-				+ startTime.toPattern() + " -> " + stopTime.toPattern();
+		return String.format("ID# %04d  ", (int)journeyID) + getStartTime().split(" ")[0];
 	}
 	
 	@Override
@@ -91,11 +124,13 @@ public class Journey implements Parcelable {
 		out.writeLong(carID);
 		out.writeLong(startOdometer);
 		out.writeLong(stopOdometer);
-		out.writeString(startTime.toString());
-		out.writeString(stopTime.toString());
+		out.writeString(startTime);
+		out.writeString(stopTime);
 		out.writeString(useType.toString());
 		out.writeDouble(fuelAvgEconomy);
 		out.writeDouble(fuelTotalUsed);
+        out.writeDouble(totalDistance);
+        out.writeDouble(avgSpeed);
 	}
 	
 	public static final Parcelable.Creator<Journey> CREATOR 

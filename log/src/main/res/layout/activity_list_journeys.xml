@@ -16,11 +16,24 @@
         android:layout_height="0dip"
         android:drawSelectorOnTop="false"/>
 
-    <TextView
-        android:id="@android:id/empty"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:text="@string/message_no_journeys"
-        android:textSize="28sp" />
+    <Button
+        android:layout_margin="@dimen/default_padding"
+        android:id="@+id/button_add_journey"
+        android:text="@string/button_begin_journey"
+        android:drawableLeft="@drawable/image_add_white"
+        android:textColor="#FFFFFF"
+        android:textSize="@dimen/text_regular_plus"
+        android:onClick="addJourney"
+        android:layout_width="fill_parent"
+        android:layout_height="50dp"
+        android:background="@drawable/buttonshape"
+        android:gravity="left|center_vertical"
+        android:drawablePadding="15dp"
+        android:shadowColor="#A8A8A8"
+        android:shadowDx="0"
+        android:shadowDy="0"
+        android:shadowRadius="5"
+        android:layout_alignParentBottom="true"
+        android:layout_centerInParent="true"/>
+
 </RelativeLayout>

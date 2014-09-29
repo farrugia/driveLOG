@@ -1,6 +1,8 @@
 package com.design3.log.adapter;
 
 import java.util.ArrayList;
+import java.util.Date;
+
 import com.design3.log.R;
 import com.design3.log.model.Journey;
 
@@ -30,12 +32,18 @@ public class JourneyArrayAdapter extends ArrayAdapter<Journey> {
 		LayoutInflater inflater = (LayoutInflater) context.
 				getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		View rowView = inflater.inflate(R.layout.row_layout, parent, false);
-		ImageView imageView = (ImageView) rowView.findViewById(R.id.list_image);
-		imageView.setImageResource(R.drawable.image_journey);
+
 		TextView textView1 = (TextView) rowView.findViewById(R.id.list_text1);
 		textView1.setText(values.get(position).toString());
-//		TextView textView2 = (TextView) rowView.findViewById(R.id.list_text2);
-//		textView2.setText(values.get(position).getYear());
+		TextView textView2 = (TextView) rowView.findViewById(R.id.list_text2);
+		textView2.setText(String.valueOf(values.get(position).getRunTimeMinutes())
+            + " minutes");
+
+        ImageView imageView = (ImageView) rowView.findViewById(R.id.list_image);
+        if(values.get(position).getUseType() == Journey.UseType.PERSONAL)
+             imageView.setImageResource(R.drawable.image_personal);
+        else imageView.setImageResource((R.drawable.image_business));
+
 		return rowView;
 	}
 

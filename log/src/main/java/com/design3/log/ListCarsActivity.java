@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import com.design3.log.adapter.CarArrayAdapter;
 import com.design3.log.model.Car;
 import com.design3.log.sql.CarDataSource;
+import com.design3.log.sql.JourneyDataSource;
+
 import android.os.Bundle;
 import android.app.AlertDialog;
 import android.app.ListActivity;
@@ -22,6 +24,7 @@ public class ListCarsActivity extends ListActivity {
 	
 	private CarArrayAdapter carsAdapter; // dynamic array for saved Car objects
 	private CarDataSource carsDB;
+    private JourneyDataSource journeysDB;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +33,8 @@ public class ListCarsActivity extends ListActivity {
 		
 		carsDB = new CarDataSource(this);
 		carsDB.open();
+        journeysDB = new JourneyDataSource(this);
+        journeysDB.open();
 		
 		// Check if intent is source from AddCarActivity by checking EXTRA.
         // If so, create a new Car object, and add it to the cars ArrayList
@@ -85,7 +90,7 @@ public class ListCarsActivity extends ListActivity {
 		startActivity(intent);
 	}
 	
-	// Function to remove a car entry from the array adapter
+	// Function to remove a car entry from the array adapter and database
 	protected void removeCar(final int position) {
 		AlertDialog.Builder alert = new AlertDialog.Builder(ListCarsActivity.this);
 		alert.setTitle("Delete");
@@ -96,6 +101,7 @@ public class ListCarsActivity extends ListActivity {
 			public void onClick(DialogInterface dialog, int which) {
 				ArrayAdapter<Car> adapter = ((ArrayAdapter<Car>) getListAdapter());
 				carsDB.deleteCar(adapter.getItem(position));
+                journeysDB.deleteCarsJourneys(adapter.getItem(position));
 				fillView();
 			}
 		});
@@ -129,18 +135,14 @@ public class ListCarsActivity extends ListActivity {
     
     @Override
     protected void onStop() {
-    	super.onStop();
     	carsDB.close();
-    }
-    
-    @Override
-    protected void onPause() {
-    	super.onPause();
-    	carsDB.close();
+        super.onStop();
     }
     
     @Override 
-    protected void onResume() {
-    	super.onResume();
+    protected void onRestart() {
+        carsDB.open();
+
+        super.onRestart();
     }
 }

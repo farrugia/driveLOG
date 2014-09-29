@@ -2,8 +2,10 @@ package com.design3.log.sql;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
+import com.design3.log.model.Car;
 import com.design3.log.model.Journey;
 import com.design3.log.model.Journey.UseType;
 
@@ -30,7 +32,8 @@ public class JourneyDataSource {
 		  JourneySQLHelper.COLUMN_USE_TYPE, JourneySQLHelper.COLUMN_START_TIME,
 		  JourneySQLHelper.COLUMN_STOP_TIME, JourneySQLHelper.COLUMN_START_ODOMETER,
 		  JourneySQLHelper.COLUMN_STOP_ODOMETER, JourneySQLHelper.COLUMN_FUEL_AV_ECO,
-		  JourneySQLHelper.COLUMN_FUEL_TOTAL_USED
+		  JourneySQLHelper.COLUMN_FUEL_TOTAL_USED, JourneySQLHelper.COLUMN_TOTAL_DISTANCE,
+          JourneySQLHelper.COLUMN_AVG_SPEED
 		};
 	
 	// Constructor
@@ -53,13 +56,15 @@ public class JourneyDataSource {
 	public Journey createJourney(Journey journey) {
 		ContentValues values = new ContentValues();
 		values.put(JourneySQLHelper.COLUMN_CAR_ID, journey.getCarID());
-		values.put(JourneySQLHelper.COLUMN_USE_TYPE, journey.getUseType());
-		values.put(JourneySQLHelper.COLUMN_START_TIME, journey.getStartTime().toPattern());
+		values.put(JourneySQLHelper.COLUMN_USE_TYPE, journey.getUseType().toString());
+		values.put(JourneySQLHelper.COLUMN_START_TIME, journey.getStartTime());
 		values.put(JourneySQLHelper.COLUMN_START_ODOMETER, journey.getStartOdometer());
-        values.put(JourneySQLHelper.COLUMN_STOP_TIME, journey.getStopTime().toPattern());
+        values.put(JourneySQLHelper.COLUMN_STOP_TIME, journey.getStopTime());
 		values.put(JourneySQLHelper.COLUMN_STOP_ODOMETER, journey.getStopOdometer());
 		values.put(JourneySQLHelper.COLUMN_FUEL_AV_ECO, journey.getFuelAvgEconomy());
 		values.put(JourneySQLHelper.COLUMN_FUEL_TOTAL_USED, journey.getFuelTotalUsed());
+        values.put(JourneySQLHelper.COLUMN_TOTAL_DISTANCE, journey.getTotalDistance());
+        values.put(JourneySQLHelper.COLUMN_AVG_SPEED, journey.getAvgSpeed());
 		
 		long insertId = database.insert(JourneySQLHelper.TABLE_JOURNEYS, null, values);
 		
@@ -73,10 +78,14 @@ public class JourneyDataSource {
 	}
 	
 	public void deleteJourney(Journey journey) {
-		long id = journey.getJourneyID();
 		database.delete(JourneySQLHelper.TABLE_JOURNEYS, 
-				JourneySQLHelper.COLUMN_ID + " = " + id, null);
+				JourneySQLHelper.COLUMN_ID + " = " + journey.getJourneyID(), null);
 	}
+
+    public void deleteCarsJourneys(Car car) {
+        database.delete(JourneySQLHelper.TABLE_JOURNEYS,
+                JourneySQLHelper.COLUMN_CAR_ID + " = " + car.getCarID(), null);
+    }
 	
 	public List<Journey> getJourneys(String selection) {
 		List<Journey> journeys = new ArrayList<Journey>();
@@ -94,23 +103,33 @@ public class JourneyDataSource {
 		cursor.close();
 		return journeys;
 	}
+
+    public Journey getJourney(long id) {
+        Cursor cursor = database.query(JourneySQLHelper.TABLE_JOURNEYS, allColumns,
+                JourneySQLHelper.COLUMN_ID + " = " + id, null, null, null, null);
+        cursor.moveToFirst();
+        if(!cursor.isAfterLast())
+            return cursorToJourney(cursor);
+        else return null;
+    }
 	
 	// method to convert a cursor row location to a Journey object
-	@SuppressLint("SimpleDateFormat") 
 	private Journey cursorToJourney(Cursor cursor) {
 		/* index is as follows: 0: id, 1: carID, 2: useType, 3: startTime
 								4: stopTime, 5:startOdo, 6: stopOdo,
-								7: fuelAvgEco, 8: fuelTotalUsed */
+								7: fuelAvgEco, 8: fuelTotalUsed
+								9: totalDistance, 10: averageSpeed */
 		
 		Journey journey = new Journey(cursor.getLong(0), cursor.getLong(1),
-				UseType.valueOf(cursor.getString(2)), 
-				new SimpleDateFormat(cursor.getString(3)), 
+				UseType.valueOf(cursor.getString(2)), cursor.getString(3),
 				cursor.getLong(5));
 		
-		journey.setStopTime(new SimpleDateFormat(cursor.getString(4)));
+		journey.setStopTime(cursor.getString(4));
 		journey.setStopOdometer(cursor.getLong(6));
 		journey.setFuelAvgEconomy(cursor.getDouble(7));
 		journey.setFuelTotalUsed(cursor.getDouble(8));
+        journey.setTotalDistance(cursor.getDouble(9));
+        journey.setAvgSpeed(cursor.getDouble(10));
 		
 		return journey;
 	}

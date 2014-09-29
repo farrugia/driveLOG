@@ -26,8 +26,9 @@ public class CarDataSource {
 		{ CarSQLHelper.COLUMN_ID, CarSQLHelper.COLUMN_MAKE, 
 		  CarSQLHelper.COLUMN_MODEL, CarSQLHelper.COLUMN_YEAR,
 		  CarSQLHelper.COLUMN_VIN, CarSQLHelper.COLUMN_ODOMETER,
-		  CarSQLHelper.COLUMN_FUEL_CAPACITY, CarSQLHelper.COLUMN_FUEL_CURR_ECO,
-		  CarSQLHelper.COLUMN_FUEL_CURR_ECO, CarSQLHelper.COLUMN_FUEL_AV_ECO
+		  CarSQLHelper.COLUMN_FUEL_CAPACITY, CarSQLHelper.COLUMN_FUEL_AV_ECO,
+          CarSQLHelper.COLUMN_FUEL_CURRENT, CarSQLHelper.COLUMN_PERSONAL_JOURNEYS,
+          CarSQLHelper.COLUMN_BUSINESS_JOURNEYS
 		};
 	
 	// Constructor
@@ -46,7 +47,7 @@ public class CarDataSource {
 		dbHelper.close();
 	}
 	
-	public Car createCar(Car car) {
+	public boolean createCar(Car car) {
 		ContentValues values = new ContentValues();
 		values.put(CarSQLHelper.COLUMN_MAKE, car.getMake());
 		values.put(CarSQLHelper.COLUMN_MODEL, car.getModel());
@@ -55,25 +56,35 @@ public class CarDataSource {
 		values.put(CarSQLHelper.COLUMN_ODOMETER, car.getOdometer());
 		values.put(CarSQLHelper.COLUMN_FUEL_CAPACITY, car.getFuelCapacity());
 		values.put(CarSQLHelper.COLUMN_FUEL_CURRENT, car.getFuelCurrent());
-		values.put(CarSQLHelper.COLUMN_FUEL_AV_ECO, car.getFuelAverageEconomy());
-		values.put(CarSQLHelper.COLUMN_FUEL_CURR_ECO, car.getFuelCurrentEconomy());
+		values.put(CarSQLHelper.COLUMN_FUEL_AV_ECO, car.getFuelAverageEconomy());;
+        values.put(CarSQLHelper.COLUMN_PERSONAL_JOURNEYS, car.getPersonalJourneyCount());
+        values.put(CarSQLHelper.COLUMN_BUSINESS_JOURNEYS, car.getBusinessJourneyCount());
 		
-		long insertId = database.insert(CarSQLHelper.TABLE_CARS, null, values);
-		
-		Cursor cursor = database.query(CarSQLHelper.TABLE_CARS, 
-						allColumns, CarSQLHelper.COLUMN_ID + " = "
-						+ insertId, null, null, null, null);
-		cursor.moveToFirst(); // moves the cursor to the first row
-		Car newCar = cursorToCar(cursor);
-		cursor.close();
-		return newCar;
+		return database.insert(CarSQLHelper.TABLE_CARS, null, values) > 0;
 	}
 	
-	public void deleteCar(Car car) {
+	public boolean deleteCar(Car car) {
 		long id = car.getCarID();
-		database.delete(CarSQLHelper.TABLE_CARS, 
-				CarSQLHelper.COLUMN_ID + " = " + id, null);
+		return database.delete(CarSQLHelper.TABLE_CARS,
+				CarSQLHelper.COLUMN_ID + " = " + id, null) > 0;
 	}
+
+    public boolean updateCar(Car car) {
+        ContentValues values = new ContentValues();
+        values.put(CarSQLHelper.COLUMN_MAKE, car.getMake());
+        values.put(CarSQLHelper.COLUMN_MODEL, car.getModel());
+        values.put(CarSQLHelper.COLUMN_YEAR, car.getYear());
+        values.put(CarSQLHelper.COLUMN_VIN, car.getVIN());
+        values.put(CarSQLHelper.COLUMN_ODOMETER, car.getOdometer());
+        values.put(CarSQLHelper.COLUMN_FUEL_CAPACITY, car.getFuelCapacity());
+        values.put(CarSQLHelper.COLUMN_FUEL_CURRENT, car.getFuelCurrent());
+        values.put(CarSQLHelper.COLUMN_FUEL_AV_ECO, car.getFuelAverageEconomy());
+        values.put(CarSQLHelper.COLUMN_PERSONAL_JOURNEYS, car.getPersonalJourneyCount());
+        values.put(CarSQLHelper.COLUMN_BUSINESS_JOURNEYS, car.getBusinessJourneyCount());
+
+        return database.update(CarSQLHelper.TABLE_CARS, values,
+                CarSQLHelper.COLUMN_ID + " = " + car.getCarID(), null) > 0;
+    }
 	
 	public List<Car> getAllCars() {
 		List<Car> cars = new ArrayList<Car>();
@@ -91,6 +102,15 @@ public class CarDataSource {
 		cursor.close();
 		return cars;
 	}
+
+    public Car getCar(long id) {
+        Cursor cursor = database.query(CarSQLHelper.TABLE_CARS, allColumns,
+                CarSQLHelper.COLUMN_ID + " = " + id, null, null, null, null);
+        cursor.moveToFirst();
+        if(!cursor.isAfterLast())
+            return cursorToCar(cursor);
+        else return null;
+    }
 	
 	// method to convert a cursor row location to a Car object
 	private Car cursorToCar(Cursor cursor) {
@@ -104,7 +124,10 @@ public class CarDataSource {
 		car.setFuelCapacity(cursor.getDouble(6));
 		car.setFuelCurrent(cursor.getDouble(7));
 		car.setFuelAverageEconomy(cursor.getDouble(8));
-		car.setFuelCurrentEconomy(cursor.getDouble(9));
+        car.setPersonalJourneyCount(cursor.getInt(9));
+        car.setBusinessJourneyCount(cursor.getInt(10));
 		return car;
 	}
+
+
 }

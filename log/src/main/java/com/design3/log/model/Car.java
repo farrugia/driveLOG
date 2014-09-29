@@ -5,10 +5,11 @@ import android.os.Parcelable;
 
 public class Car implements Parcelable {
 	
-	public static final String EXTRA_CAR = "com.design3.log.model.EXTRA_CAR";
+	public static final String EXTRA_CAR =    "com.design3.log.model.EXTRA_CAR";
+    public static final String EXTRA_CAR_ID = "com.design3.log.model.EXTRA_CAR_ID";
 	
 	private long   carID, odometer, VIN;
-	private double fuelCapacity, fuelCurrent, fuelCurrentEconomy, fuelAverageEconomy;
+	private double fuelCapacity, fuelCurrent, fuelAverageEconomy;
 	private String make, model, year;
     private int    personalJourneyCount, businessJourneyCount;
 	
@@ -29,7 +30,6 @@ public class Car implements Parcelable {
 		VIN = parcel.readLong();
 		fuelCapacity = parcel.readDouble();
 		fuelAverageEconomy = parcel.readDouble();
-		fuelCurrentEconomy = parcel.readDouble();
 		fuelCurrent = parcel.readDouble();
 		make = parcel.readString();
 		model = parcel.readString();
@@ -58,28 +58,37 @@ public class Car implements Parcelable {
 	public void setFuelCurrent(double fuelCurr) {this.fuelCurrent = fuelCurr;}
 	public double getFuelCurrent() {return fuelCurrent;}
 	
-	public void setFuelAverageEconomy(double fuelAvEc) 
+	public void setFuelAverageEconomy(double fuelAvEc)
 		{ this.fuelAverageEconomy = fuelAvEc;}
 	public double getFuelAverageEconomy() {return fuelAverageEconomy;}
-	
-	public void setFuelCurrentEconomy(double fuelCurrEc) 
-		{ this.fuelCurrentEconomy = fuelCurrEc; }
-	public double getFuelCurrentEconomy() {return fuelCurrentEconomy;}
 	
 	public void setVIN(long VIN) {this.VIN = VIN;}
 	public long getVIN() {return VIN;}
 
     public int getPersonalJourneyCount() { return personalJourneyCount; }
+    public void setPersonalJourneyCount(int n) { personalJourneyCount = n; }
     public int getBusinessJourneyCount() { return businessJourneyCount; }
+    public void setBusinessJourneyCount(int n) { businessJourneyCount = n; }
     public int getTotalJourneyCount() { return personalJourneyCount + businessJourneyCount; }
 
-    public void addJourney(char flag) {
-        switch (flag) {
-            case 'p' :
+    public void addJourney(Journey.UseType useType) {
+        switch (useType) {
+            case PERSONAL :
                 personalJourneyCount++;
                 break;
-            case 'b' :
+            case BUSINESS :
                 businessJourneyCount++;
+                break;
+        }
+    }
+
+    public void subtractJourney(Journey.UseType useType) {
+        switch(useType) {
+            case PERSONAL :
+                personalJourneyCount--;
+                break;
+            case BUSINESS :
+                businessJourneyCount--;
                 break;
         }
     }
@@ -98,7 +107,6 @@ public class Car implements Parcelable {
 		out.writeLong(VIN);
 		out.writeDouble(fuelCapacity);
 		out.writeDouble(fuelAverageEconomy);
-		out.writeDouble(fuelCurrentEconomy);
 		out.writeDouble(fuelCurrent);
 		out.writeString(make);
 		out.writeString(model);

@@ -17,6 +17,8 @@ public class JourneySQLHelper extends SQLiteOpenHelper {
 	public static final String COLUMN_STOP_ODOMETER 	= "stopOdometer";
 	public static final String COLUMN_FUEL_AV_ECO 		= "fuelAvEco";
 	public static final String COLUMN_FUEL_TOTAL_USED	= "fuelTotalUsed";
+    public static final String COLUMN_TOTAL_DISTANCE    = "totalDistance";
+    public static final String COLUMN_AVG_SPEED         = "avgSpeed";
 	
 	private static final String DATABASE_NAME = "journeys.db";
 	private static final int 	DATABASE_VERSION = 1;
@@ -32,8 +34,10 @@ public class JourneySQLHelper extends SQLiteOpenHelper {
 	/* 4 */ + COLUMN_STOP_TIME   		+ " text, "
 	/* 5 */ + COLUMN_START_ODOMETER		+ " integer not null, "
 	/* 6 */ + COLUMN_STOP_ODOMETER 		+ " integer, "
-	/* 7 */ + COLUMN_FUEL_AV_ECO		+ " integer, "
-	/* 8 */ + COLUMN_FUEL_TOTAL_USED	+ " integer);";
+	/* 7 */ + COLUMN_FUEL_AV_ECO		+ " real, "
+	/* 8 */ + COLUMN_FUEL_TOTAL_USED	+ " real, "
+    /* 9 */ + COLUMN_TOTAL_DISTANCE     + " real, "
+    /* 10*/ + COLUMN_AVG_SPEED          + " real);";
 	
 	public JourneySQLHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
