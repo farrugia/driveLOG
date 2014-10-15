@@ -1,15 +1,12 @@
 package com.design3.log.sql;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import com.design3.log.model.Car;
 import com.design3.log.model.Journey;
 import com.design3.log.model.Journey.UseType;
 
-import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;

@@ -21,6 +21,7 @@ import com.design3.log.model.Car;
 import com.design3.log.model.Journey;
 import com.design3.log.sql.CarDataSource;
 import com.design3.log.sql.JourneyDataSource;
+import com.design3.log.sql.JourneyLogDataSource;
 import com.design3.log.sql.JourneySQLHelper;
 
 import java.util.ArrayList;
@@ -33,6 +34,7 @@ public class ListJourneysFragment extends ListFragment {
     private JourneyArrayAdapter journeysAdapter; // dynamic array for journeys
     private int sectionNumber;
     private JourneyDataSource journeysDB;
+    private JourneyLogDataSource journeyLogDB;
     private CarDataSource carsDB;
     private Car car;
     private long carID;
@@ -50,6 +52,8 @@ public class ListJourneysFragment extends ListFragment {
     public void onAttach(Activity activity) {
         this.journeysDB = ((ListJourneysActivity)activity).getJourneysDB();
         this.carsDB = ((ListJourneysActivity)activity).getCarsDB();
+        this.journeyLogDB = ((ListJourneysActivity)activity).getJourneyLogDB();
+
         this.car = ((ListJourneysActivity)activity).getCar();
         carID = car.getCarID();
         super.onAttach(activity);
@@ -120,7 +124,9 @@ public class ListJourneysFragment extends ListFragment {
                 car.subtractJourney(adapter.getItem(position).getUseType());
                 carsDB.updateCar(car);
                 journeysDB.deleteJourney(adapter.getItem(position));
-                onCreateView(inflater, container, savedInstanceState);
+                journeyLogDB.deleteJourneyDataForJourney(adapter.getItem(position).getJourneyID());
+                adapter.remove(adapter.getItem(position));
+                adapter.notifyDataSetChanged();
             }
         });
         alert.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {

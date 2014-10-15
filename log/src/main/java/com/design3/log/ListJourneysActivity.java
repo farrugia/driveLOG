@@ -14,6 +14,7 @@ import com.design3.log.adapter.JourneysPagerAdapter;
 import com.design3.log.model.Car;
 import com.design3.log.sql.CarDataSource;
 import com.design3.log.sql.JourneyDataSource;
+import com.design3.log.sql.JourneyLogDataSource;
 
 public class ListJourneysActivity extends FragmentActivity {
 
@@ -27,6 +28,7 @@ public class ListJourneysActivity extends FragmentActivity {
     private Car car;
     private JourneyDataSource journeysDB;
     private CarDataSource carsDB;
+    private JourneyLogDataSource journeyLogDB;
     private long carID;
 
 
@@ -40,6 +42,8 @@ public class ListJourneysActivity extends FragmentActivity {
         carID = car.getCarID();
         journeysDB = new JourneyDataSource(this);
         journeysDB.open();
+        journeyLogDB = new JourneyLogDataSource(this);
+        journeyLogDB.open();
         carsDB = new CarDataSource(this);
         carsDB.open();
 
@@ -115,6 +119,9 @@ public class ListJourneysActivity extends FragmentActivity {
 
     protected JourneyDataSource getJourneysDB() {
         return journeysDB;
+    }
+    protected JourneyLogDataSource getJourneyLogDB() {
+        return journeyLogDB;
     }
     protected CarDataSource getCarsDB() { return carsDB; }
     protected Car getCar() {

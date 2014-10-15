@@ -9,7 +9,6 @@ import android.os.Parcelable;
 public class Journey implements Parcelable {
 
 	public static final String EXTRA_JOURNEY       = "com.design3.log.model.EXTRA_JOURNEY";
-    public static final String EXTRA_JOURNEY_ID    = "com.design3.log.model.EXTRA_JOURNEY_ID";
 	
 	public enum UseType {BUSINESS, PERSONAL};
 	
@@ -106,6 +105,11 @@ public class Journey implements Parcelable {
             hour--;
 
         return (hour*60)+minute;
+    }
+
+    public double getStartMinuteAsDouble() {
+        String parts[] = startTime.split(" ")[1].split(":");
+        return Integer.parseInt(parts[1]);
     }
 
 	@Override

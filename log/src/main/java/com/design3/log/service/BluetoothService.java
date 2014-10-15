@@ -11,9 +11,6 @@ import android.os.IBinder;
 import android.util.Log;
 import android.widget.TextView;
 
-import com.design3.log.BluetoothWatcher;
-import com.design3.log.R;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -108,17 +105,10 @@ public class BluetoothService extends Service {
         }
     }
 
-    public void watchSerial(TextView textView) {
-
-
-        new BluetoothWatcher(textView, istream);
-
-    }
-
     public boolean getConnectionStatus() {
         return isConnected;
     }
-
+    public InputStream getIStream() { return istream;}
     public String getBtAddress() {
         return btAddress;
     }
@@ -128,7 +118,5 @@ public class BluetoothService extends Service {
         public BluetoothService getService() {
             return BluetoothService.this;
         }
-
-        ;
     }
 }

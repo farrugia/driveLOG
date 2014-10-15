@@ -12,14 +12,15 @@ import com.design3.log.model.Car;
 import com.design3.log.model.Journey;
 import com.design3.log.sql.CarDataSource;
 import com.design3.log.sql.JourneyDataSource;
+import com.design3.log.sql.JourneyLogDataSource;
 import com.design3.log.sql.JourneySQLHelper;
 
 public class ViewJourneyActivity extends Activity {
-	
-	private long journeyID;
+
     private Journey journey;
     private Car car;
     private JourneyDataSource journeysDB;
+    private JourneyLogDataSource journeyLogDB;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -27,6 +28,8 @@ public class ViewJourneyActivity extends Activity {
 
         journeysDB = new JourneyDataSource(this);
         journeysDB.open();
+        journeyLogDB = new JourneyLogDataSource(this);
+        journeyLogDB.open();
 
         setContentView(R.layout.activity_view_journey);
 
@@ -35,13 +38,12 @@ public class ViewJourneyActivity extends Activity {
         	journey = getIntent().getExtras().getParcelable(Journey.EXTRA_JOURNEY);
             car = getIntent().getExtras().getParcelable(Car.EXTRA_CAR);
         	setTitle(car.toString());
-            journeyID = journey.getJourneyID();
             fillView();
         }
 
         else if(savedInstanceState != null) {
-            journeyID = savedInstanceState.getLong(Car.EXTRA_CAR_ID);
-            journey = journeysDB.getJourney(journeyID);
+            journey = savedInstanceState.getParcelable(Journey.EXTRA_JOURNEY);
+            journey = journeysDB.getJourney(journey.getJourneyID());
             fillView();
         }
 
@@ -79,24 +81,26 @@ public class ViewJourneyActivity extends Activity {
         totalKMText = (TextView)findViewById(R.id.text_total_km);
         totalRunMinutesText = (TextView)findViewById(R.id.text_total_run_minutes);
 
-        journeyIdText.setText(String.format("# %04d",(int)journeyID));
+        journeyIdText.setText(String.format("# %04d",(int)journey.getJourneyID()));
         startText.setText(journey.getStartTime());
         stopText.setText(journey.getStopTime());
         useTypeText.setText(String.valueOf(journey.getUseType()));
-        avgEconomyText.setText(String.format("%2.1f  L/100km", journey.getFuelAvgEconomy()));
-        avgSpeedText.setText(String.format("%2.1f  km/h", journey.getAvgSpeed()));
-        totalKMText.setText(String.format("%d  km", (int)journey.getTotalDistance()));
+        avgEconomyText.setText(String.format("%2.1f  L/100km", journeyLogDB.getJourneyAvgEconomy(journey.getJourneyID())));
+        avgSpeedText.setText(String.format("%2.1f  km/h", journeyLogDB.getJourneyAvgSpeed(journey.getJourneyID())));
+        totalKMText.setText(String.format("%d  km", (int)journeyLogDB.getJourneyTotalDistance(journey.getJourneyID())));
         totalRunMinutesText.setText(String.valueOf(journey.getRunTimeMinutes()) + "  mins");
     }
 
     public void graphJourney(View view) {
         Intent intent = new Intent(this, JourneyGraphActivity.class);
+        intent.putExtra(Journey.EXTRA_JOURNEY, journey);
+        intent.putExtra(Car.EXTRA_CAR, car);
         startActivity(intent);
     }
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
-        savedInstanceState.putLong(Journey.EXTRA_JOURNEY_ID, journeyID);
+        savedInstanceState.putParcelable(Journey.EXTRA_JOURNEY, journey);
         super.onSaveInstanceState(savedInstanceState);
     }
 
@@ -109,7 +113,7 @@ public class ViewJourneyActivity extends Activity {
     @Override
     protected void onRestart() {
         journeysDB.open();
-        journey = journeysDB.getJourney(journeyID);
+        journey = journeysDB.getJourney(journey.getJourneyID());
         fillView();
         super.onRestart();
     }
